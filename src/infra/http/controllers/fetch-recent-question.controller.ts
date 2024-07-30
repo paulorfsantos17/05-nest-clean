@@ -1,8 +1,10 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
+
 import { z } from 'zod'
+import { FetchRecentQuestionUseCase } from '@/domain/forum/application/use-cases/fetch-recent-question'
+import { QuestionPresenter } from '../presenters/question-presenter'
 
 const pageQueryParamSchema = z
   .string()
@@ -17,21 +19,21 @@ const queryValidationPipe = new ZodValidationPipe(pageQueryParamSchema)
 
 @Controller('/questions')
 export class FetchRecentQuestionController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private fetchRecentQuestionUseCase: FetchRecentQuestionUseCase) {}
 
   @Get()
   @UseGuards(JwtAuthGuard)
   async handle(@Query('page', queryValidationPipe) page: PageQueryParamSchema) {
-    const questions = await this.prisma.question.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-      take: 20,
-      skip: (page - 1) * 20,
-    })
+    const result = await this.fetchRecentQuestionUseCase.execute({ page })
+
+    if (result.isLeft()) {
+      throw new Error()
+    }
+
+    const questions = result.value.questions
 
     return {
-      questions,
+      questions: questions.map(QuestionPresenter.toHTTP),
     }
   }
 }
