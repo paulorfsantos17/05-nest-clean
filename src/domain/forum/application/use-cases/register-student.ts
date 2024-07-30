@@ -3,7 +3,7 @@ import { Student } from '../../enterprise/entities/student'
 import { Either, left, right } from '@/core/either'
 
 import { Injectable } from '@nestjs/common'
-import type { HashGenerator } from '../cryptography/hash-generator'
+import { HashGenerator } from '../cryptography/hash-generator'
 import { StudentAlreadyExistsError } from './errors/student-already-exists-error'
 
 interface RegisterStudentUseCaseRequest {

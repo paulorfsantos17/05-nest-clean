@@ -2,8 +2,8 @@ import { StudentsRepository } from '../repositories/students-repository'
 import { Either, left, right } from '@/core/either'
 
 import { Injectable } from '@nestjs/common'
-import type { HashComparer } from '../cryptography/hash-comparer'
-import type { Encrypter } from '../cryptography/encrypter'
+import { HashComparer } from '../cryptography/hash-comparer'
+import { Encrypter } from '../cryptography/encrypter'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
 interface AuthenticateStudentUseCaseRequest {
