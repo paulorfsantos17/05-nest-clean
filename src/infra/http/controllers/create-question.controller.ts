@@ -10,8 +10,9 @@ import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
+
 import { z } from 'zod'
+import { CreateQuestionUseCase } from '@/domain/forum/application/use-cases/create-question'
 
 const createQuestionBodySchema = z.object({
   title: z.string(),
@@ -24,7 +25,7 @@ const bodyValidationPipe = new ZodValidationPipe(createQuestionBodySchema)
 
 @Controller('/questions')
 export class CreateQuestionController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private createQuestion: CreateQuestionUseCase) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -36,24 +37,11 @@ export class CreateQuestionController {
     const { content, title } = body
     const userId = user.sub
 
-    await this.prisma.question.create({
-      data: {
-        title,
-        content,
-        slug: createSlug(title),
-        authorId: userId,
-      },
+    await this.createQuestion.execute({
+      authorId: userId,
+      content,
+      title,
+      attachmentsIds: [],
     })
   }
-}
-
-function createSlug(value: string) {
-  return value
-    .normalize('NFD') // Normalize the string to decompose combined letters into their base letters and diacritics
-    .replace(/[\u0300-\u036f]/g, '') // Remove diacritic marks
-    .toLowerCase() // Convert to lowercase
-    .trim() // Trim leading and trailing whitespace
-    .replace(/[^a-z0-9 -]/g, '') // Remove invalid characters
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Replace multiple hyphens with a single hyphen
 }
