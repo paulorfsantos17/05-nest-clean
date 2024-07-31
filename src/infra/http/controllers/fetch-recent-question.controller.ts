@@ -1,11 +1,4 @@
-import {
-  BadRequestException,
-  Controller,
-  Get,
-  Query,
-  UseGuards,
-} from '@nestjs/common'
-import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
+import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
 import { z } from 'zod'
@@ -28,7 +21,6 @@ export class FetchRecentQuestionController {
   constructor(private fetchRecentQuestionUseCase: FetchRecentQuestionUseCase) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   async handle(@Query('page', queryValidationPipe) page: PageQueryParamSchema) {
     const result = await this.fetchRecentQuestionUseCase.execute({ page })
 

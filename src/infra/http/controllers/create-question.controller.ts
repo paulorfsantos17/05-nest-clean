@@ -5,10 +5,8 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UseGuards,
 } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
-import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
@@ -30,7 +28,6 @@ export class CreateQuestionController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UseGuards(JwtAuthGuard)
   async handle(
     @CurrentUser() user: UserPayload,
     @Body(bodyValidationPipe) body: CreateQuestionBodySchema,
