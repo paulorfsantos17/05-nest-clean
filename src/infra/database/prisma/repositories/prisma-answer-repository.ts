@@ -1,9 +1,9 @@
-import type { PaginationParams } from '@/core/repositories/pagination-params'
-import type { AnswersRepository } from '@/domain/forum/application/repositories/answer-repository'
-import type { Answer } from '@/domain/forum/enterprise/entities/answer'
+import { PaginationParams } from '@/core/repositories/pagination-params'
+import { AnswersRepository } from '@/domain/forum/application/repositories/answer-repository'
+import { Answer } from '@/domain/forum/enterprise/entities/answer'
 import { Injectable } from '@nestjs/common'
 import { PrismaAnswerMapper } from '../mappers/prisma-answer-mapper'
-import type { PrismaService } from '../prisma.service'
+import { PrismaService } from '../prisma.service'
 
 @Injectable()
 export class PrismaAnswerRepository implements AnswersRepository {
