@@ -22,7 +22,7 @@ Content-Type: application/json
 
 {
   "email": "paulo2@example.com",
-  "password": "123456789"
+  "password": "12345678"
 }
 
 
@@ -34,7 +34,7 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-  "title" : "Question Title-2", 
+  "title" : "Question Title-1", 
   "content": "Question content"
 }
 
@@ -42,5 +42,12 @@ Authorization: Bearer {{authToken}}
 
 # @name fetch_recent_questions
 GET {{baseurl}}/questions?page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name get_question_by_slug
+GET {{baseurl}}/questions/question-title-2
 Content-Type: application/json
 Authorization: Bearer {{authToken}}

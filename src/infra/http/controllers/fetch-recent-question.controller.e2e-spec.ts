@@ -6,7 +6,7 @@ import { Test } from '@nestjs/testing'
 import { hash } from 'bcryptjs'
 import request from 'supertest'
 
-describe('Create Question(e2e)', () => {
+describe('Fetch Recent Question (e2e)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwt: JwtService
