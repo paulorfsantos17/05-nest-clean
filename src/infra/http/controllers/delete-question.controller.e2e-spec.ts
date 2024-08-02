@@ -8,7 +8,7 @@ import request from 'supertest'
 import { QuestionFactory } from 'test/factories/make-question'
 import { StudentFactory } from 'test/factories/make-student'
 
-describe('Edit Question(e2e)', () => {
+describe('Delete Question(e2e)', () => {
   let app: INestApplication
   let jwt: JwtService
 
@@ -29,7 +29,7 @@ describe('Edit Question(e2e)', () => {
 
     await app.init()
   })
-  test('[PUT] /questions/:id', async () => {
+  test('[DELETE] /questions/:id', async () => {
     const user = await studentFactory.makePrismaStudent()
 
     const accessToken = jwt.sign({ sub: user.id.toString() })
@@ -41,20 +41,16 @@ describe('Edit Question(e2e)', () => {
     const questionId = question.id.toString()
 
     const response = await request(app.getHttpServer())
-      .put(`/questions/${questionId}`)
+      .delete(`/questions/${questionId}`)
       .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        title: 'New Title',
-        content: 'Updated question content.',
-      })
+      .send()
 
     expect(response.status).toBe(204)
 
-    const questionOnDatabase = await prisma.question.findFirstOrThrow({
+    const questionOnDatabase = await prisma.question.findUnique({
       where: { id: questionId },
     })
 
-    expect(questionOnDatabase).toBeTruthy()
-    expect(questionOnDatabase.title).toBe('New Title')
+    expect(questionOnDatabase).toBeNull()
   })
 })
