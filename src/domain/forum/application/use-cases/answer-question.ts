@@ -4,28 +4,30 @@ import { AnswersRepository } from '@/domain/forum/application/repositories/answe
 import { Either, right } from '@/core/either'
 import { AnswerAttachment } from '../../enterprise/entities/answer-attachment'
 import { AnswerAttachmentList } from '../../enterprise/entities/answer-attachment-list'
+import { Injectable } from '@nestjs/common'
 
-interface AnswerAnswerUseCaseRequest {
+interface AnswerQuestionUseCaseRequest {
   questionId: string
-  instrutorId: string
+  authorId: string
   content: string
   attachmentsIds: string[]
 }
-type AnswerAnswerUseCaseResponse = Either<null, { answer: Answer }>
+type AnswerUseCaseResponse = Either<null, { answer: Answer }>
 
-export class AnswerAnswerUseCase {
+@Injectable()
+export class AnswerQuestionUseCase {
   constructor(private answerRepository: AnswersRepository) {
     this.answerRepository = answerRepository
   }
 
   async execute({
-    instrutorId,
+    authorId,
     questionId,
     content,
     attachmentsIds,
-  }: AnswerAnswerUseCaseRequest): Promise<AnswerAnswerUseCaseResponse> {
+  }: AnswerQuestionUseCaseRequest): Promise<AnswerUseCaseResponse> {
     const answer = Answer.create({
-      authorId: new UniqueEntityId(instrutorId),
+      authorId: new UniqueEntityId(authorId),
       content,
       questionId: new UniqueEntityId(questionId),
     })
