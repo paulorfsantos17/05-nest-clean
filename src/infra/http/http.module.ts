@@ -18,6 +18,7 @@ import { DeleteQuestionController } from './controllers/delete-question.controll
 import { DeleteQuestionUseCase } from '@/domain/forum/application/use-cases/delete-question'
 import { AnswerQuestionUseCase } from '@/domain/forum/application/use-cases/answer-question'
 import { CreateAnswerController } from './controllers/answer-question.controller'
+import { EditAnswerController } from './controllers/edit-answer.controller'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -30,6 +31,7 @@ import { CreateAnswerController } from './controllers/answer-question.controller
     EditQuestionController,
     DeleteQuestionController,
     CreateAnswerController,
+    EditAnswerController,
   ],
   providers: [
     CreateQuestionUseCase,
