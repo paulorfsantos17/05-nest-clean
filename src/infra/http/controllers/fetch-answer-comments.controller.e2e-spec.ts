@@ -6,30 +6,38 @@ import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
 import { hash } from 'bcryptjs'
 import request from 'supertest'
+import { AnswerFactory } from 'test/factories/make-answer'
+import { AnswerCommentFactory } from 'test/factories/make-answer-comment'
 import { QuestionFactory } from 'test/factories/make-question'
-import { QuestionCommentFactory } from 'test/factories/make-question-comment'
 
-describe('Fetch Question Comments (e2e)', () => {
+describe('Fetch Answer Comments (e2e)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwt: JwtService
   let questionFactory: QuestionFactory
-  let questionCommentFactory: QuestionCommentFactory
+  let answerFactory: AnswerFactory
+  let answerCommentFactory: AnswerCommentFactory
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
-      providers: [QuestionFactory, PrismaService, QuestionCommentFactory],
+      providers: [
+        QuestionFactory,
+        PrismaService,
+        AnswerCommentFactory,
+        AnswerFactory,
+      ],
     }).compile()
 
     questionFactory = moduleRef.get(QuestionFactory)
-    questionCommentFactory = moduleRef.get(QuestionCommentFactory)
+    answerCommentFactory = moduleRef.get(AnswerCommentFactory)
+    answerFactory = moduleRef.get(AnswerFactory)
     app = moduleRef.createNestApplication()
     prisma = moduleRef.get(PrismaService)
     jwt = moduleRef.get(JwtService)
 
     await app.init()
   })
-  test('[GET] /questions/:questionId/answer', async () => {
+  test('[GET] /answers/:questionId/comments', async () => {
     const user = await prisma.user.create({
       data: {
         name: 'John Doe',
@@ -44,23 +52,29 @@ describe('Fetch Question Comments (e2e)', () => {
       authorId: new UniqueEntityId(user.id),
     })
 
-    const questionId = question.id.toString()
+    const answer = await answerFactory.makePrismaAnswer({
+      authorId: new UniqueEntityId(user.id),
+      questionId: question.id,
+      content: 'Content Answer',
+    })
+
+    const answerId = answer.id.toString()
 
     await Promise.all([
-      questionCommentFactory.makePrismaQuestionComment({
+      answerCommentFactory.makePrismaAnswerComment({
         authorId: new UniqueEntityId(user.id),
-        questionId: question.id,
+        answerId: answer.id,
         content: 'Content Comment one',
       }),
-      questionCommentFactory.makePrismaQuestionComment({
+      answerCommentFactory.makePrismaAnswerComment({
         authorId: new UniqueEntityId(user.id),
-        questionId: question.id,
+        answerId: answer.id,
         content: 'Content Comment two',
       }),
     ])
 
     const response = await request(app.getHttpServer())
-      .get(`/questions/${questionId}/comments`)
+      .get(`/answers/${answerId}/comments`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
 
