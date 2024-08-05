@@ -27,6 +27,7 @@ export class PrismaAnswerCommentMapper {
       id: answerComment.id.toString(),
       content: answerComment.content,
       authorId: answerComment.authorId.toString(),
+      answerId: answerComment.answerId.toString(),
       createdAt: answerComment.createdAt,
       updateAt: answerComment.updatedAt,
     }

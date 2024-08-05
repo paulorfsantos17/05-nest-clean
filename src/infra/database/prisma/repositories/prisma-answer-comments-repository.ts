@@ -42,10 +42,9 @@ export class PrismaAnswerCommentsRepository implements AnswerCommentRepository {
   }
 
   async delete(answerComment: AnswerComment): Promise<void> {
-    const data = PrismaAnswerCommentMapper.toPrisma(answerComment)
-    await this.prisma.comment.update({
-      where: { id: data.id },
-      data,
+    const answerCommentId = answerComment.id.toString()
+    await this.prisma.comment.delete({
+      where: { id: answerCommentId },
     })
   }
 }
