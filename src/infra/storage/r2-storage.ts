@@ -1,9 +1,9 @@
-import type {
+import {
   Uploader,
   UploadParams,
 } from '@/domain/forum/application/storage/uploader'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
-import type { EnvService } from '../env/env.service'
+import { EnvService } from '../env/env.service'
 import { randomUUID } from 'node:crypto'
 import { Injectable } from '@nestjs/common'
 
