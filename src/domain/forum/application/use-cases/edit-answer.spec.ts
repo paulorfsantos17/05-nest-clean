@@ -99,4 +99,40 @@ describe('Edit Answer', () => {
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(ResourceNotFoundError)
   })
+
+  it('should sync new and removed attachments when editing a answer', async () => {
+    const createAnswer = makeAnswer(
+      {
+        authorId: new UniqueEntityId('author-1'),
+      },
+      new UniqueEntityId('answer-1'),
+    )
+
+    await inMemoryAnswerRepository.create(createAnswer)
+
+    inMemoryAnswerAttachmentsRepository.items.push(
+      makeAnswerAttachments({
+        attachmentId: new UniqueEntityId('1'),
+        answerId: createAnswer.id,
+      }),
+      makeAnswerAttachments({
+        attachmentId: new UniqueEntityId('2'),
+        answerId: createAnswer.id,
+      }),
+    )
+
+    const result = await sut.execute({
+      answerId: 'answer-1',
+      authorId: 'author-1',
+      content: 'new content',
+      attachmentsIds: ['1', '3'],
+    })
+
+    expect(result.isRight).toBeTruthy()
+    expect(inMemoryAnswerAttachmentsRepository.items).toHaveLength(2)
+    expect(inMemoryAnswerAttachmentsRepository.items).toEqual([
+      expect.objectContaining({ attachmentId: new UniqueEntityId('1') }),
+      expect.objectContaining({ attachmentId: new UniqueEntityId('3') }),
+    ])
+  })
 })

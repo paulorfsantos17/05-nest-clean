@@ -4,6 +4,16 @@ import { AnswerAttachment } from '@/domain/forum/enterprise/entities/answer-atta
 export class InMemoryAnswerAttachmentsRepository
   // eslint-disable-next-line prettier/prettier
   implements AnswerAttachmentsRepository {
+  async createMany(attachments: AnswerAttachment[]): Promise<void> {
+    this.items.push(...attachments)
+  }
+
+  async deleteMany(attachments: AnswerAttachment[]): Promise<void> {
+    this.items = this.items.filter((item) => {
+      return !attachments.some((attachment) => attachment.equals(item))
+    })
+  }
+
   public items: AnswerAttachment[] = []
 
   async deleteManyByAnswerId(answerId: string): Promise<void> {

@@ -17,6 +17,7 @@ import { EditQuestionUseCase } from '@/domain/forum/application/use-cases/edit-q
 const editQuestionBodySchema = z.object({
   title: z.string(),
   content: z.string(),
+  attachments: z.array(z.string().uuid()).default([]),
 })
 
 type EditQuestionBodySchema = z.infer<typeof editQuestionBodySchema>
@@ -34,14 +35,14 @@ export class EditQuestionController {
     @Body(bodyValidationPipe) body: EditQuestionBodySchema,
     @Param('id') questionId: string,
   ) {
-    const { content, title } = body
+    const { content, title, attachments } = body
     const userId = user.sub
 
     const result = await this.editQuestion.execute({
       questionId,
       content,
       authorId: userId,
-      attachmentsIds: [],
+      attachmentsIds: attachments,
       title,
     })
 

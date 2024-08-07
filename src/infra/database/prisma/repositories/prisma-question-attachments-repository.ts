@@ -29,7 +29,7 @@ export class PrismaQuestionsAttachmentsRepository
     questionId: string,
   ): Promise<QuestionAttachment[]> {
     const questionAttachments = await this.prisma.attachment.findMany({
-      where: { id: questionId },
+      where: { questionId },
     })
 
     return questionAttachments.map(PrismaQuestionAttachmentMapper.toDomain)
