@@ -6,9 +6,13 @@ import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { InMemoryQuestionAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository'
 import { makeQuestionAttachments } from 'test/factories/make-question-attachments'
+import type { InMemoryAttachmentRepository } from 'test/repositories/in-memory-attachment-repostiory'
+import type { InMemoryStudentRepository } from 'test/repositories/in-memory-student-repositories.'
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository
 let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository
+let inMemoryAttachments: InMemoryAttachmentRepository
+let inMemoryStudentRepository: InMemoryStudentRepository
 let sut: EditQuestionUseCase
 
 describe('Edit Question', () => {
@@ -18,6 +22,8 @@ describe('Edit Question', () => {
 
     inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
       inMemoryQuestionAttachmentsRepository,
+      inMemoryAttachments,
+      inMemoryStudentRepository,
     )
 
     sut = new EditQuestionUseCase(

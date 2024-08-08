@@ -4,12 +4,13 @@ import { InMemoryAnswerRepository } from 'test/repositories/in-memory-answer-rep
 import { InMemoryAnswerAttachmentsRepository } from 'test/repositories/in-memory-answer-attachments-repository'
 import { InMemoryQuestionAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository'
 import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repositories'
-import { SendNotificationUseCase, SendNotificationUseCaseRequest, SendNotificationUseCaseResponse } from '../use-cases/send-notification'
+import { SendNotificationUseCase } from '../use-cases/send-notification'
 import { InMemoryNotificationsRepository } from 'test/repositories/in-memory-notifications-repository'
 import { makeQuestion } from 'test/factories/make-question'
 import { MockInstance } from 'vitest'
 import { waitFor } from 'test/utils/await-for'
-
+import type { InMemoryAttachmentRepository } from 'test/repositories/in-memory-attachment-repostiory'
+import type { InMemoryStudentRepository } from 'test/repositories/in-memory-student-repositories.'
 
 let inMemoryAnswerRepository: InMemoryAnswerRepository
 let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository
@@ -18,6 +19,9 @@ let inMemoryQuestionsRepository: InMemoryQuestionsRepository
 let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository
 
 let inMemoryNotificationsRepository: InMemoryNotificationsRepository
+
+let inMemoryAttachments: InMemoryAttachmentRepository
+let inMemoryStudentRepository: InMemoryStudentRepository
 
 let sendNotificationUseCase: SendNotificationUseCase
 
@@ -30,6 +34,8 @@ describe('On Answer Created', () => {
 
     inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
       inMemoryQuestionAttachmentsRepository,
+      inMemoryAttachments,
+      inMemoryStudentRepository,
     )
 
     inMemoryAnswerAttachmentsRepository =
@@ -41,13 +47,13 @@ describe('On Answer Created', () => {
 
     inMemoryNotificationsRepository = new InMemoryNotificationsRepository()
 
-
-
-    sendNotificationUseCase = new SendNotificationUseCase(inMemoryNotificationsRepository)
+    sendNotificationUseCase = new SendNotificationUseCase(
+      inMemoryNotificationsRepository,
+    )
 
     sendNotificationExecuteSpy = vi.spyOn(sendNotificationUseCase, 'execute')
 
-
+    // eslint-disable-next-line no-new
     new OnAnswerCreated(inMemoryQuestionsRepository, sendNotificationUseCase)
   })
 
@@ -55,10 +61,8 @@ describe('On Answer Created', () => {
     const question = makeQuestion()
     const answer = makeAnswer({ questionId: question.id })
 
-
     inMemoryQuestionsRepository.create(question)
     inMemoryAnswerRepository.create(answer)
-
 
     await waitFor(() => {
       expect(sendNotificationExecuteSpy).toHaveBeenCalled()

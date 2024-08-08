@@ -4,10 +4,14 @@ import { InMemoryAnswerCommentsRepository } from 'test/repositories/in-memory-an
 import { makeAnswer } from 'test/factories/make-answer'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { InMemoryAnswerAttachmentsRepository } from 'test/repositories/in-memory-answer-attachments-repository'
+import type { InMemoryStudentRepository } from 'test/repositories/in-memory-student-repositories.'
 
 let inMemoryAnswerRepository: InMemoryAnswerRepository
 let inMemoryAnswerCommentsRepository: InMemoryAnswerCommentsRepository
 let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository
+
+let inMemoryStudentRepository: InMemoryStudentRepository
+
 let sut: CommentOnAnswerUseCase
 
 describe('Answer on Question', () => {
@@ -17,7 +21,9 @@ describe('Answer on Question', () => {
     inMemoryAnswerRepository = new InMemoryAnswerRepository(
       inMemoryAnswerAttachmentsRepository,
     )
-    inMemoryAnswerCommentsRepository = new InMemoryAnswerCommentsRepository()
+    inMemoryAnswerCommentsRepository = new InMemoryAnswerCommentsRepository(
+      inMemoryStudentRepository,
+    )
     sut = new CommentOnAnswerUseCase(
       inMemoryAnswerCommentsRepository,
       inMemoryAnswerRepository,

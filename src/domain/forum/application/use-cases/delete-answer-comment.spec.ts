@@ -4,13 +4,18 @@ import { makeAnswerComment } from 'test/factories/make-answer-comment'
 import { DeleteAnswerCommentUseCase } from './delete-answer-comment'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
+import type { InMemoryStudentRepository } from 'test/repositories/in-memory-student-repositories.'
 
 let inMemoryAnswersCommentRepository: InMemoryAnswerCommentsRepository
+
+let inMemoryStudentRepository: InMemoryStudentRepository
 let sut: DeleteAnswerCommentUseCase
 
 describe('Delete Answer Comment', () => {
   beforeEach(() => {
-    inMemoryAnswersCommentRepository = new InMemoryAnswerCommentsRepository()
+    inMemoryAnswersCommentRepository = new InMemoryAnswerCommentsRepository(
+      inMemoryStudentRepository,
+    )
     sut = new DeleteAnswerCommentUseCase(inMemoryAnswersCommentRepository)
   })
 

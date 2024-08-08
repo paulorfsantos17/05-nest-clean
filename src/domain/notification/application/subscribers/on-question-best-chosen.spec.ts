@@ -9,12 +9,16 @@ import { makeQuestion } from 'test/factories/make-question'
 import { MockInstance } from 'vitest'
 import { waitFor } from 'test/utils/await-for'
 import { OnQuestionBestAnswerChosen } from './on-question-best-chosen copy'
+import type { InMemoryAttachmentRepository } from 'test/repositories/in-memory-attachment-repostiory'
+import type { InMemoryStudentRepository } from 'test/repositories/in-memory-student-repositories.'
 
 let inMemoryAnswerRepository: InMemoryAnswerRepository
 let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository
 let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository
+let inMemoryAttachments: InMemoryAttachmentRepository
+let inMemoryStudentRepository: InMemoryStudentRepository
 
 let inMemoryNotificationsRepository: InMemoryNotificationsRepository
 
@@ -29,6 +33,8 @@ describe('On Question Best Answer Chosen', () => {
 
     inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
       inMemoryQuestionAttachmentsRepository,
+      inMemoryAttachments,
+      inMemoryStudentRepository,
     )
 
     inMemoryAnswerAttachmentsRepository =
@@ -46,6 +52,7 @@ describe('On Question Best Answer Chosen', () => {
 
     sendNotificationExecuteSpy = vi.spyOn(sendNotificationUseCase, 'execute')
 
+    // eslint-disable-next-line no-new
     new OnQuestionBestAnswerChosen(
       inMemoryAnswerRepository,
       sendNotificationUseCase,
