@@ -3,7 +3,9 @@ import { EventHandler } from '@/core/events/event-handler'
 import { SendNotificationUseCase } from '../use-cases/send-notification'
 import { AnswersRepository } from '@/domain/forum/application/repositories/answer-repository'
 import { QuestionBestAnswerChosenEvent } from '@/domain/forum/enterprise/events/question-best-answer-chosen-event'
+import { Injectable } from '@nestjs/common'
 
+@Injectable()
 export class OnQuestionBestAnswerChosen implements EventHandler {
   constructor(
     private answerRepository: AnswersRepository,
@@ -29,7 +31,7 @@ export class OnQuestionBestAnswerChosen implements EventHandler {
 
     if (answer)
       await this.sendNotificationUseCase.execute({
-        recipientId: answer.id.toString(),
+        recipientId: answer.authorId.toString(),
         content: `Há Resposta que você enviou em "${question.title.substring(0, 20).concat('...')} foi escolhida pelo author`,
         title: `Sua Resposta escolhida como há melhor.`,
       })

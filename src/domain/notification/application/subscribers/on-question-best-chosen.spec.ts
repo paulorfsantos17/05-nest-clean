@@ -8,7 +8,7 @@ import { InMemoryNotificationsRepository } from 'test/repositories/in-memory-not
 import { makeQuestion } from 'test/factories/make-question'
 import { MockInstance } from 'vitest'
 import { waitFor } from 'test/utils/await-for'
-import { OnQuestionBestAnswerChosen } from './on-question-best-chosen copy'
+import { OnQuestionBestAnswerChosen } from './on-question-best-chosen'
 import type { InMemoryAttachmentRepository } from 'test/repositories/in-memory-attachment-repostiory'
 import type { InMemoryStudentRepository } from 'test/repositories/in-memory-student-repositories.'
 
