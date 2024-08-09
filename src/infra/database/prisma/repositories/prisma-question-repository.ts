@@ -42,7 +42,7 @@ export class PrismaQuestionRepository implements QuestionRepository {
       this.questionAttachmentsRepository.deleteMany(
         question.attachments.getRemovedItems(),
       ),
-      this.cacheRepository.delete(`question:${question.slug}:details`),
+      this.cacheRepository.delete(`question:${question.slug.value}:details`),
     ])
 
     DomainEvents.dispatchEventsForAggregate(question.id)
@@ -72,7 +72,8 @@ export class PrismaQuestionRepository implements QuestionRepository {
 
     if (cacheHit) {
       const cacheData = JSON.parse(cacheHit)
-      return cacheData
+
+      return PrismaQuestionDetailsMapper.toDomain(cacheData)
     }
 
     const question = await this.prisma.question.findUnique({
@@ -86,12 +87,12 @@ export class PrismaQuestionRepository implements QuestionRepository {
     if (!question) {
       return null
     }
-    const questionDetails = PrismaQuestionDetailsMapper.toDomain(question)
 
     await this.cacheRepository.set(
       `question:${slug}:details`,
-      JSON.stringify(questionDetails),
+      JSON.stringify(question),
     )
+    const questionDetails = PrismaQuestionDetailsMapper.toDomain(question)
 
     return questionDetails
   }
